@@ -1,5 +1,5 @@
 // Mock Orders Data
-const mockOrders = [
+let mockOrders = [
     { id: '#ORD-0024', customer: 'Jean Paul', date: 'Oct 26, 2026', amount: '25,500 RWF', status: 'Completed', statusColor: 'bg-green-100 text-green-800' },
     { id: '#ORD-0023', customer: 'Alice Mutoni', date: 'Oct 26, 2026', amount: '12,000 RWF', status: 'Processing', statusColor: 'bg-yellow-100 text-yellow-800' },
     { id: '#ORD-0022', customer: 'David N', date: 'Oct 25, 2026', amount: '45,000 RWF', status: 'Completed', statusColor: 'bg-green-100 text-green-800' },
@@ -7,7 +7,7 @@ const mockOrders = [
     { id: '#ORD-0020', customer: 'Mugisha E.', date: 'Oct 24, 2026', amount: '18,000 RWF', status: 'Completed', statusColor: 'bg-green-100 text-green-800' }
 ];
 
-const mockCustomers = [
+let mockCustomers = [
     { name: 'Jean Paul', contact: '0788123456', orders: 3, spent: '45,500 RWF', joined: 'Jan 12, 2026' },
     { name: 'Alice Mutoni', contact: '0788987654', orders: 1, spent: '12,000 RWF', joined: 'Oct 20, 2026' },
     { name: 'David N', contact: 'david.n@example.com', orders: 5, spent: '120,000 RWF', joined: 'Mar 05, 2026' },
@@ -155,7 +155,8 @@ function renderDashboard() {
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.statusColor}">${order.status}</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onclick="viewOrder('${order.id}')" class="text-emerald-600 hover:text-emerald-900">View</button>
+                        <button onclick="viewOrder('${order.id}')" class="text-emerald-600 hover:text-emerald-900 mr-3">View</button>
+                        <button onclick="deleteOrder('${order.id}')" class="text-red-600 hover:text-red-900" title="Delete"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `;
@@ -215,7 +216,8 @@ function renderDashboard() {
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${customer.spent}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${customer.joined}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onclick="viewCustomer('${customer.name}')" class="text-emerald-600 hover:text-emerald-900">View</button>
+                        <button onclick="viewCustomer('${customer.name}')" class="text-emerald-600 hover:text-emerald-900 mr-3">View</button>
+                        <button onclick="deleteCustomer('${customer.name}')" class="text-red-600 hover:text-red-900" title="Delete"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `;
@@ -242,4 +244,18 @@ window.deleteProduct = function(productId) {
 
 window.viewCustomer = function(customerName) {
     alert('Viewing details for customer: ' + customerName + '. Full profile view can be added here.');
+};
+
+window.deleteOrder = function(orderId) {
+    if(confirm('Are you sure you want to delete order ' + orderId + '?')) {
+        mockOrders = mockOrders.filter(o => o.id !== orderId);
+        renderDashboard();
+    }
+};
+
+window.deleteCustomer = function(customerName) {
+    if(confirm('Are you sure you want to delete customer ' + customerName + '?')) {
+        mockCustomers = mockCustomers.filter(c => c.name !== customerName);
+        renderDashboard();
+    }
 };
