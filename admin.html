@@ -32,7 +32,7 @@
                     <i class="fa-solid fa-cart-arrow-down w-6"></i>
                     <span class="font-medium">Orders</span>
                 </a>
-                <a href="#" onclick="alert('Customers section coming soon!')" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                <a href="#" data-target="view-customers" class="sidebar-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
                     <i class="fa-solid fa-users w-6"></i>
                     <span class="font-medium">Customers</span>
                 </a>
@@ -208,6 +208,35 @@
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200" id="fullOrdersBody">
                                     <!-- Full orders here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= CUSTOMERS VIEW ================= -->
+                <div id="view-customers" class="view-section hidden">
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Customer Directory</h3>
+                            <button class="bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 transition">
+                                <i class="fa-solid fa-download mr-1"></i> Export
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Orders</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Spent</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined Date</th>
+                                        <th class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="fullCustomersBody">
+                                    <!-- Full customers here -->
                                 </tbody>
                             </table>
                         </div>

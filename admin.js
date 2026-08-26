@@ -7,6 +7,15 @@ const mockOrders = [
     { id: '#ORD-0020', customer: 'Mugisha E.', date: 'Oct 24, 2026', amount: '18,000 RWF', status: 'Completed', statusColor: 'bg-green-100 text-green-800' }
 ];
 
+const mockCustomers = [
+    { name: 'Jean Paul', contact: '0788123456', orders: 3, spent: '45,500 RWF', joined: 'Jan 12, 2026' },
+    { name: 'Alice Mutoni', contact: '0788987654', orders: 1, spent: '12,000 RWF', joined: 'Oct 20, 2026' },
+    { name: 'David N', contact: 'david.n@example.com', orders: 5, spent: '120,000 RWF', joined: 'Mar 05, 2026' },
+    { name: 'Sarah K.', contact: '0733445566', orders: 2, spent: '20,500 RWF', joined: 'Aug 17, 2026' },
+    { name: 'Mugisha E.', contact: 'mugisha.e@example.com', orders: 1, spent: '18,000 RWF', joined: 'Sep 02, 2026' },
+    { name: 'Grace U.', contact: '0781112233', orders: 4, spent: '65,000 RWF', joined: 'Feb 28, 2026' }
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
     setupNavigation();
@@ -185,6 +194,33 @@ function renderDashboard() {
             `;
         });
     }
+
+    // 4. FULL CUSTOMERS TABLE
+    const fullCustomersBody = document.getElementById('fullCustomersBody');
+    if (fullCustomersBody) {
+        fullCustomersBody.innerHTML = '';
+        mockCustomers.forEach(customer => {
+            fullCustomersBody.innerHTML += `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="h-8 w-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mr-3">
+                                ${customer.name.charAt(0)}
+                            </div>
+                            <div class="text-sm font-medium text-gray-900">${customer.name}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${customer.contact}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">${customer.orders}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${customer.spent}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${customer.joined}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="viewCustomer('${customer.name}')" class="text-emerald-600 hover:text-emerald-900">View</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
 }
 
 // Global functions for inline onclick handlers
@@ -202,4 +238,8 @@ window.deleteProduct = function(productId) {
         window.saveProducts();
         renderDashboard();
     }
+};
+
+window.viewCustomer = function(customerName) {
+    alert('Viewing details for customer: ' + customerName + '. Full profile view can be added here.');
 };
