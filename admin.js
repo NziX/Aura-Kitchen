@@ -9,6 +9,7 @@ const mockOrders = [
 
 document.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
+    setupNavigation();
 
     // Setup Add Product Modal
     const addProductBtn = document.getElementById('addProductBtn');
@@ -48,28 +49,45 @@ document.addEventListener('DOMContentLoaded', () => {
             
             closeModal();
             renderDashboard(); // Re-render the UI
-            alert('Product added successfully!');
         });
     }
+});
 
-    // "View All" and Sidebar links validations
-    const viewAllBtn = document.querySelector('button.text-emerald-600.hover\\:text-emerald-800');
-    if (viewAllBtn) {
-        viewAllBtn.addEventListener('click', () => {
-            alert('View All Orders page is not implemented yet.');
-        });
-    }
+function setupNavigation() {
+    const navLinks = document.querySelectorAll('.sidebar-link, .nav-btn');
+    const views = document.querySelectorAll('.view-section');
+    const headerTitle = document.getElementById('topHeaderTitle');
+    const sidebarNavLinks = document.querySelectorAll('.sidebar-link');
 
-    const sidebarLinks = document.querySelectorAll('aside nav a');
-    sidebarLinks.forEach(link => {
+    navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            if(link.textContent.trim() !== 'Dashboard') {
-                e.preventDefault();
-                alert(link.textContent.trim() + ' section is not implemented yet.');
-            }
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target');
+            if(!targetId) return;
+
+            // Hide all views
+            views.forEach(v => v.classList.add('hidden'));
+            
+            // Show target view
+            document.getElementById(targetId).classList.remove('hidden');
+
+            // Update sidebar active states
+            sidebarNavLinks.forEach(sl => {
+                sl.classList.remove('text-emerald-700', 'bg-emerald-50');
+                sl.classList.add('text-gray-600');
+                if (sl.getAttribute('data-target') === targetId) {
+                    sl.classList.add('text-emerald-700', 'bg-emerald-50');
+                    sl.classList.remove('text-gray-600');
+                    // Update header title based on sidebar link text
+                    if(headerTitle) {
+                        const titleText = sl.querySelector('span').textContent;
+                        headerTitle.textContent = titleText === 'Dashboard' ? 'Dashboard Overview' : titleText;
+                    }
+                }
+            });
         });
     });
-});
+}
 
 function renderDashboard() {
     // Set Product Count
@@ -78,69 +96,100 @@ function renderDashboard() {
         productCountEl.textContent = products.length;
     }
 
-    // Populate Orders Table
-    const ordersTableBody = document.getElementById('ordersTableBody');
-    if (ordersTableBody) {
-        ordersTableBody.innerHTML = ''; // Clear first
-        mockOrders.forEach(order => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${order.id}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.customer}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.date}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${order.amount}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.statusColor}">
-                        ${order.status}
-                    </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button onclick="viewOrder('${order.id}')" class="text-emerald-600 hover:text-emerald-900">View</button>
-                </td>
+    // 1. DASHBOARD SNIPPETS
+    const dashOrdersBody = document.getElementById('dashOrdersBody');
+    if (dashOrdersBody) {
+        dashOrdersBody.innerHTML = '';
+        mockOrders.slice(0, 3).forEach(order => { // Only show top 3 on dashboard
+            dashOrdersBody.innerHTML += `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${order.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${order.amount}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.statusColor}">${order.status}</span>
+                    </td>
+                </tr>
             `;
-            ordersTableBody.appendChild(tr);
         });
     }
 
-    // Populate Inventory Table
-    const inventoryTableBody = document.getElementById('inventoryTableBody');
-    if (inventoryTableBody && typeof products !== 'undefined') {
-        inventoryTableBody.innerHTML = ''; // Clear first
-        products.forEach(product => {
-            const mockStock = Math.floor(Math.random() * 50) + 5; 
-            const formattedPrice = product.price.toLocaleString('en-RW') + ' RWF';
-            
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10">
-                            <img class="h-10 w-10 rounded-full object-cover" src="${product.image}" alt="">
-                        </div>
-                        <div class="ml-4">
+    const dashInventoryBody = document.getElementById('dashInventoryBody');
+    if (dashInventoryBody && typeof products !== 'undefined') {
+        dashInventoryBody.innerHTML = '';
+        products.slice(0, 3).forEach(product => {
+            dashInventoryBody.innerHTML += `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <img class="h-8 w-8 rounded-full object-cover mr-3" src="${product.image}" alt="">
                             <div class="text-sm font-medium text-gray-900">${product.name}</div>
                         </div>
-                    </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${formattedPrice}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span class="${mockStock < 10 ? 'text-red-600 font-medium' : 'text-gray-900'}">${mockStock} in stock</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button onclick="editProduct(${product.id})" class="text-emerald-600 hover:text-emerald-900 mr-3" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                </td>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price.toLocaleString('en-RW')} RWF</td>
+                </tr>
             `;
-            inventoryTableBody.appendChild(tr);
+        });
+    }
+
+    // 2. FULL ORDERS TABLE
+    const fullOrdersBody = document.getElementById('fullOrdersBody');
+    if (fullOrdersBody) {
+        fullOrdersBody.innerHTML = '';
+        mockOrders.forEach(order => {
+            fullOrdersBody.innerHTML += `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${order.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.customer}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${order.amount}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.statusColor}">${order.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="viewOrder('${order.id}')" class="text-emerald-600 hover:text-emerald-900">View</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // 3. FULL INVENTORY TABLE
+    const fullInventoryBody = document.getElementById('fullInventoryBody');
+    if (fullInventoryBody && typeof products !== 'undefined') {
+        fullInventoryBody.innerHTML = '';
+        products.forEach(product => {
+            const mockStock = Math.floor(Math.random() * 50) + 5; 
+            fullInventoryBody.innerHTML += `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-full object-cover" src="${product.image}" alt="">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${product.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${product.price.toLocaleString('en-RW')} RWF
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span class="${mockStock < 10 ? 'text-red-600 font-medium' : 'text-gray-900'}">${mockStock} in stock</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="editProduct(${product.id})" class="text-emerald-600 hover:text-emerald-900 mr-3" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
         });
     }
 }
 
 // Global functions for inline onclick handlers
 window.viewOrder = function(orderId) {
-    alert('Viewing details for order ' + orderId);
+    alert('Viewing details for order ' + orderId + '. Action modal can be added here.');
 };
 
 window.editProduct = function(productId) {

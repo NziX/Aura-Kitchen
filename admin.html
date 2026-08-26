@@ -19,20 +19,20 @@
                 <span class="font-bold text-xl tracking-tight text-gray-900">Aura Admin</span>
             </div>
             
-            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <a href="#" class="flex items-center px-4 py-3 text-emerald-700 bg-emerald-50 rounded-lg">
+            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto" id="sidebarNav">
+                <a href="#" data-target="view-dashboard" class="sidebar-link flex items-center px-4 py-3 text-emerald-700 bg-emerald-50 rounded-lg transition">
                     <i class="fa-solid fa-chart-pie w-6"></i>
                     <span class="font-medium">Dashboard</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                <a href="#" data-target="view-products" class="sidebar-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
                     <i class="fa-solid fa-box-open w-6"></i>
                     <span class="font-medium">Products</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                <a href="#" data-target="view-orders" class="sidebar-link flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
                     <i class="fa-solid fa-cart-arrow-down w-6"></i>
                     <span class="font-medium">Orders</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
+                <a href="#" onclick="alert('Customers section coming soon!')" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition">
                     <i class="fa-solid fa-users w-6"></i>
                     <span class="font-medium">Customers</span>
                 </a>
@@ -45,7 +45,7 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main Content Wrapper -->
         <div class="flex-1 flex flex-col overflow-hidden">
             
             <!-- Top header -->
@@ -56,7 +56,7 @@
                 </div>
                 
                 <div class="hidden md:block">
-                    <h2 class="text-xl font-semibold text-gray-800">Dashboard Overview</h2>
+                    <h2 class="text-xl font-semibold text-gray-800" id="topHeaderTitle">Dashboard Overview</h2>
                 </div>
                 
                 <div class="flex items-center space-x-4">
@@ -69,100 +69,148 @@
                 </div>
             </header>
             
-            <!-- Dashboard Content -->
+            <!-- Main Content Area -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
                 
-                <!-- Stats row -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <!-- Stat Card 1 -->
-                    <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
-                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                            <i class="fa-solid fa-wallet text-xl"></i>
+                <!-- ================= DASHBOARD VIEW ================= -->
+                <div id="view-dashboard" class="view-section">
+                    <!-- Stats row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                                <i class="fa-solid fa-wallet text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Total Revenue</p>
+                                <p class="text-2xl font-bold text-gray-900">345,000 RWF</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Total Revenue</p>
-                            <p class="text-2xl font-bold text-gray-900">345,000 RWF</p>
+                        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+                            <div class="p-3 rounded-full bg-emerald-100 text-emerald-600 mr-4">
+                                <i class="fa-solid fa-shopping-bag text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Total Orders</p>
+                                <p class="text-2xl font-bold text-gray-900">24</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
+                                <i class="fa-solid fa-box text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Products</p>
+                                <p class="text-2xl font-bold text-gray-900" id="productCount">0</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
+                                <i class="fa-solid fa-users text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">New Customers</p>
+                                <p class="text-2xl font-bold text-gray-900">12</p>
+                            </div>
                         </div>
                     </div>
-                    <!-- Stat Card 2 -->
-                    <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
-                        <div class="p-3 rounded-full bg-emerald-100 text-emerald-600 mr-4">
-                            <i class="fa-solid fa-shopping-bag text-xl"></i>
+
+                    <!-- Recent Orders & Inventory Snippets -->
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        <!-- Recent Orders -->
+                        <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-900">Recent Orders</h3>
+                                <button class="nav-btn text-emerald-600 hover:text-emerald-800 text-sm font-medium" data-target="view-orders">View All</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="dashOrdersBody">
+                                        <!-- Inject here -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Total Orders</p>
-                            <p class="text-2xl font-bold text-gray-900">24</p>
-                        </div>
-                    </div>
-                    <!-- Stat Card 3 -->
-                    <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
-                        <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
-                            <i class="fa-solid fa-box text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Products</p>
-                            <p class="text-2xl font-bold text-gray-900" id="productCount">0</p>
-                        </div>
-                    </div>
-                    <!-- Stat Card 4 -->
-                    <div class="bg-white rounded-lg shadow-sm p-6 flex items-center">
-                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
-                            <i class="fa-solid fa-users text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">New Customers</p>
-                            <p class="text-2xl font-bold text-gray-900">12</p>
+
+                        <!-- Inventory Overview -->
+                        <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-lg font-medium text-gray-900">Inventory Overview</h3>
+                                <button class="nav-btn text-emerald-600 hover:text-emerald-800 text-sm font-medium" data-target="view-products">Manage</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="dashInventoryBody">
+                                        <!-- Inject here -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Orders Table -->
-                <div class="bg-white shadow-sm rounded-lg overflow-hidden mb-8">
-                    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-900">Recent Orders</h3>
-                        <button class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">View All</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="ordersTableBody">
-                                <!-- Orders will be injected here -->
-                            </tbody>
-                        </table>
+                <!-- ================= PRODUCTS VIEW ================= -->
+                <div id="view-products" class="view-section hidden">
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">All Products</h3>
+                            <button id="addProductBtn" class="bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add Product
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                        <th class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="fullInventoryBody">
+                                    <!-- Full inventory here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Product Inventory Summary -->
-                <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-900">Product Inventory</h3>
-                        <button id="addProductBtn" class="bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 transition">
-                            <i class="fa-solid fa-plus mr-1"></i> Add Product
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Edit</span></th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="inventoryTableBody">
-                                <!-- Inventory will be injected here -->
-                            </tbody>
-                        </table>
+                <!-- ================= ORDERS VIEW ================= -->
+                <div id="view-orders" class="view-section hidden">
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">All Orders</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="fullOrdersBody">
+                                    <!-- Full orders here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -212,7 +260,6 @@
         </div>
     </div>
 
-    <!-- Data script must be loaded first to access products -->
     <script src="data.js"></script>
     <script src="admin.js"></script>
 </body>
