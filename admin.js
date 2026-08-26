@@ -8,7 +8,70 @@ const mockOrders = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+    renderDashboard();
+
+    // Setup Add Product Modal
+    const addProductBtn = document.getElementById('addProductBtn');
+    const addProductModal = document.getElementById('addProductModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelModalBtn = document.getElementById('cancelModalBtn');
+    const addProductForm = document.getElementById('addProductForm');
+
+    if (addProductBtn) {
+        addProductBtn.addEventListener('click', () => {
+            addProductModal.classList.remove('hidden');
+        });
+    }
+
+    const closeModal = () => {
+        addProductModal.classList.add('hidden');
+        addProductForm.reset();
+    };
+
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
+
+    if (addProductForm) {
+        addProductForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newProduct = {
+                id: Date.now(), // Generate a unique ID
+                name: document.getElementById('newProductName').value,
+                price: parseInt(document.getElementById('newProductPrice').value),
+                image: document.getElementById('newProductImage').value,
+                description: document.getElementById('newProductDesc').value
+            };
+            
+            products.unshift(newProduct); // Add to beginning
+            window.saveProducts(); // Save to localStorage
+            
+            closeModal();
+            renderDashboard(); // Re-render the UI
+            alert('Product added successfully!');
+        });
+    }
+
+    // "View All" and Sidebar links validations
+    const viewAllBtn = document.querySelector('button.text-emerald-600.hover\\:text-emerald-800');
+    if (viewAllBtn) {
+        viewAllBtn.addEventListener('click', () => {
+            alert('View All Orders page is not implemented yet.');
+        });
+    }
+
+    const sidebarLinks = document.querySelectorAll('aside nav a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            if(link.textContent.trim() !== 'Dashboard') {
+                e.preventDefault();
+                alert(link.textContent.trim() + ' section is not implemented yet.');
+            }
+        });
+    });
+});
+
+function renderDashboard() {
     // Set Product Count
     const productCountEl = document.getElementById('productCount');
     if (productCountEl && typeof products !== 'undefined') {
@@ -18,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Populate Orders Table
     const ordersTableBody = document.getElementById('ordersTableBody');
     if (ordersTableBody) {
+        ordersTableBody.innerHTML = ''; // Clear first
         mockOrders.forEach(order => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -31,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a href="#" class="text-emerald-600 hover:text-emerald-900">View</a>
+                    <button onclick="viewOrder('${order.id}')" class="text-emerald-600 hover:text-emerald-900">View</button>
                 </td>
             `;
             ordersTableBody.appendChild(tr);
@@ -41,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Populate Inventory Table
     const inventoryTableBody = document.getElementById('inventoryTableBody');
     if (inventoryTableBody && typeof products !== 'undefined') {
+        inventoryTableBody.innerHTML = ''; // Clear first
         products.forEach(product => {
-            // Mock stock for UI presentation
             const mockStock = Math.floor(Math.random() * 50) + 5; 
             const formattedPrice = product.price.toLocaleString('en-RW') + ' RWF';
             
@@ -65,11 +129,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="${mockStock < 10 ? 'text-red-600 font-medium' : 'text-gray-900'}">${mockStock} in stock</span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a href="#" class="text-emerald-600 hover:text-emerald-900 mr-3"><i class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="text-red-600 hover:text-red-900"><i class="fa-solid fa-trash"></i></a>
+                    <button onclick="editProduct(${product.id})" class="text-emerald-600 hover:text-emerald-900 mr-3" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900" title="Delete"><i class="fa-solid fa-trash"></i></button>
                 </td>
             `;
             inventoryTableBody.appendChild(tr);
         });
     }
-});
+}
+
+// Global functions for inline onclick handlers
+window.viewOrder = function(orderId) {
+    alert('Viewing details for order ' + orderId);
+};
+
+window.editProduct = function(productId) {
+    alert('Edit functionality for product ID ' + productId + ' is coming soon.');
+};
+
+window.deleteProduct = function(productId) {
+    if(confirm('Are you sure you want to delete this product?')) {
+        products = products.filter(p => p.id !== productId);
+        window.saveProducts();
+        renderDashboard();
+    }
+};

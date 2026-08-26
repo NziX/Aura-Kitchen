@@ -1,4 +1,4 @@
-const products = [
+const defaultProducts = [
     {
         id: 1,
         name: "Minimalist Ceramic Plate",
@@ -42,3 +42,13 @@ const products = [
         image: "https://images.unsplash.com/photo-1582215903038-661ffef691dc?auto=format&fit=crop&w=500&q=80"
     }
 ];
+
+let products = JSON.parse(localStorage.getItem('aura_products'));
+if (!products) {
+    products = defaultProducts;
+    localStorage.setItem('aura_products', JSON.stringify(products));
+}
+
+window.saveProducts = function() {
+    localStorage.setItem('aura_products', JSON.stringify(products));
+};
