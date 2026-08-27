@@ -45,19 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
         addProductForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const newProduct = {
-                id: Date.now(), // Generate a unique ID
-                name: document.getElementById('newProductName').value,
-                price: parseInt(document.getElementById('newProductPrice').value),
-                image: document.getElementById('newProductImage').value,
-                description: document.getElementById('newProductDesc').value
-            };
+            const imageInput = document.getElementById('newProductImage');
+            const file = imageInput.files[0];
             
-            products.unshift(newProduct); // Add to beginning
-            window.saveProducts(); // Save to localStorage
-            
-            closeModal();
-            renderDashboard(); // Re-render the UI
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newProduct = {
+                        id: Date.now(), // Generate a unique ID
+                        name: document.getElementById('newProductName').value,
+                        price: parseInt(document.getElementById('newProductPrice').value),
+                        image: e.target.result, // Base64 data URL
+                        description: document.getElementById('newProductDesc').value
+                    };
+                    
+                    products.unshift(newProduct); // Add to beginning
+                    window.saveProducts(); // Save to localStorage
+                    
+                    closeModal();
+                    renderDashboard(); // Re-render the UI
+                };
+                reader.readAsDataURL(file);
+            }
         });
     }
 });
