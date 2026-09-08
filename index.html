@@ -164,6 +164,14 @@
         </button>
     </main>
 
+    <!-- Image Preview Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 hidden z-[60] flex items-center justify-center transition-opacity p-4" onclick="closeImageModal()">
+        <button class="absolute top-4 right-4 text-white hover:text-gray-300 z-[70] p-2" onclick="closeImageModal()">
+            <i class="fa-solid fa-xmark text-3xl"></i>
+        </button>
+        <img id="fullSizeImage" src="" alt="Full size preview" class="max-w-full max-h-[90vh] object-contain rounded shadow-2xl" onclick="event.stopPropagation()">
+    </div>
+
     <script src="data.js"></script>
     <script src="app.js"></script>
 </body>

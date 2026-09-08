@@ -41,7 +41,7 @@ function renderProducts() {
         
         productCard.innerHTML = `
             <div class="h-64 overflow-hidden relative bg-gray-200">
-                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover object-center">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover object-center cursor-pointer hover:scale-105 transition duration-300" onclick="openImageModal('${product.image}')">
                 <div class="absolute top-3 right-3 bg-white px-2 py-1 text-sm font-bold rounded shadow text-gray-900">
                     ${formatPrice(product.price)}
                 </div>
@@ -275,6 +275,23 @@ function showConfirmationView() {
     hideAllViews();
     confirmationView.classList.remove('hidden');
     window.scrollTo(0, 0);
+}
+
+// Image Modal Functions
+window.openImageModal = function(imageSrc) {
+    const modal = document.getElementById('imageModal');
+    const fullSizeImg = document.getElementById('fullSizeImage');
+    if(modal && fullSizeImg) {
+        fullSizeImg.src = imageSrc;
+        modal.classList.remove('hidden');
+    }
+}
+
+window.closeImageModal = function() {
+    const modal = document.getElementById('imageModal');
+    if(modal) {
+        modal.classList.add('hidden');
+    }
 }
 
 // Run app
