@@ -213,6 +213,7 @@ function setupEventListeners() {
         // Get form data
         const formData = new FormData(checkoutForm);
         const name = formData.get('fullName');
+        const phone = formData.get('phone');
         const address = formData.get('address');
         const paymentMethodValue = formData.get('paymentMethod');
         
@@ -222,6 +223,28 @@ function setupEventListeners() {
             case 'card': paymentMethodText = 'Credit/Debit Card'; break;
             case 'cod': paymentMethodText = 'Cash on Delivery'; break;
         }
+        
+        // Construct WhatsApp Message
+        let message = `*New Order from Aura Kitchen* 🍳\n\n`;
+        message += `*Customer Details:*\n`;
+        message += `Name: ${name}\n`;
+        message += `Phone: ${phone}\n`;
+        message += `Delivery Address: ${address}\n\n`;
+        
+        message += `*Order Summary:*\n`;
+        cart.forEach(item => {
+            message += `- ${item.quantity}x ${item.product.name} (${formatPrice(item.product.price * item.quantity)})\n`;
+        });
+        
+        message += `\n*Total Amount:* ${cartTotal.textContent}\n`;
+        message += `*Payment Method:* ${paymentMethodText}\n`;
+        
+        // Encode message for URL
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/250792457573?text=${encodedMessage}`;
+        
+        // Open WhatsApp in a new tab
+        window.open(whatsappUrl, '_blank');
         
         // Populate Confirmation Data
         document.getElementById('confirmName').textContent = name;
