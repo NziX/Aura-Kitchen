@@ -10,7 +10,11 @@ function saveAdminData() {
 document.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
     setupNavigation();
+    setupAddProductModal();
+    setupEditProductModal();
+});
 
+function setupAddProductModal() {
     // Setup Add Product Modal
     const addProductBtn = document.getElementById('addProductBtn');
     const addProductModal = document.getElementById('addProductModal');
@@ -43,24 +47,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const newProduct = {
-                        id: Date.now(), // Generate a unique ID
+                        id: Date.now(),
                         name: document.getElementById('newProductName').value,
                         price: parseInt(document.getElementById('newProductPrice').value),
-                        image: e.target.result, // Base64 data URL
+                        image: e.target.result,
                         description: document.getElementById('newProductDesc').value
                     };
                     
-                    products.unshift(newProduct); // Add to beginning
-                    window.saveProducts(); // Save to localStorage
+                    products.unshift(newProduct);
+                    window.saveProducts();
                     
                     closeModal();
-                    renderDashboard(); // Re-render the UI
+                    renderDashboard();
                 };
                 reader.readAsDataURL(file);
             }
         });
     }
-});
+}
+
+function setupEditProductModal() {
+    const editModal = document.getElementById('editProductModal');
+    const closeEditBtn = document.getElementById('closeEditModalBtn');
+    const cancelEditBtn = document.getElementById('cancelEditModalBtn');
+    const editForm = document.getElementById('editProductForm');
+
+    const closeEditModal = () => {
+        editModal.classList.add('hidden');
+        editForm.reset();
+        document.getElementById('editCurrentImage').innerHTML = '';
+    };
+
+    if (closeEditBtn) closeEditBtn.addEventListener('click', closeEditModal);
+    if (cancelEditBtn) cancelEditBtn.addEventListener('click', closeEditModal);
+
+    if (editForm) {
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const productId = parseInt(document.getElementById('editProductId').value);
+            const imageInput = document.getElementById('editProductImage');
+            const file = imageInput.files[0];
+
+            const applyEdit = (imageSrc) => {
+                const idx = products.findIndex(p => p.id === productId);
+                if (idx > -1) {
+                    products[idx].name = document.getElementById('editProductName').value;
+                    products[idx].price = parseInt(document.getElementById('editProductPrice').value);
+                    products[idx].description = document.getElementById('editProductDesc').value;
+                    if (imageSrc) products[idx].image = imageSrc;
+                    window.saveProducts();
+                    closeEditModal();
+                    renderDashboard();
+                }
+            };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) { applyEdit(evt.target.result); };
+                reader.readAsDataURL(file);
+            } else {
+                applyEdit(null); // Keep existing image
+            }
+        });
+    }
+}
 
 function setupNavigation() {
     const navLinks = document.querySelectorAll('.sidebar-link, .nav-btn');
@@ -240,7 +291,22 @@ window.viewOrder = function(orderId) {
 };
 
 window.editProduct = function(productId) {
-    alert('Edit functionality for product ID ' + productId + ' is coming soon.');
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    // Pre-fill modal fields
+    document.getElementById('editProductId').value = product.id;
+    document.getElementById('editProductName').value = product.name;
+    document.getElementById('editProductPrice').value = product.price;
+    document.getElementById('editProductDesc').value = product.description;
+
+    // Show current image preview
+    document.getElementById('editCurrentImage').innerHTML = 
+        `<img src="${product.image}" alt="Current" class="h-16 w-16 object-cover rounded border border-gray-200">
+         <p class="text-xs text-gray-400 mt-1">Current image</p>`;
+
+    // Open the modal
+    document.getElementById('editProductModal').classList.remove('hidden');
 };
 
 window.deleteProduct = function(productId) {
