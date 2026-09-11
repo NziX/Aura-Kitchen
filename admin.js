@@ -1,20 +1,11 @@
-// Mock Orders Data
-let mockOrders = [
-    { id: '#ORD-0024', customer: 'Jean Paul', date: 'Oct 26, 2026', amount: '25,500 RWF', status: 'Completed', statusColor: 'bg-green-100 text-green-800' },
-    { id: '#ORD-0023', customer: 'Alice Mutoni', date: 'Oct 26, 2026', amount: '12,000 RWF', status: 'Processing', statusColor: 'bg-yellow-100 text-yellow-800' },
-    { id: '#ORD-0022', customer: 'David N', date: 'Oct 25, 2026', amount: '45,000 RWF', status: 'Completed', statusColor: 'bg-green-100 text-green-800' },
-    { id: '#ORD-0021', customer: 'Sarah K.', date: 'Oct 25, 2026', amount: '8,500 RWF', status: 'Pending', statusColor: 'bg-gray-100 text-gray-800' },
-    { id: '#ORD-0020', customer: 'Mugisha E.', date: 'Oct 24, 2026', amount: '18,000 RWF', status: 'Completed', statusColor: 'bg-green-100 text-green-800' }
-];
+// Data from LocalStorage
+let mockOrders = JSON.parse(localStorage.getItem('aura_orders')) || [];
+let mockCustomers = JSON.parse(localStorage.getItem('aura_customers')) || [];
 
-let mockCustomers = [
-    { name: 'Jean Paul', contact: '0788123456', orders: 3, spent: '45,500 RWF', joined: 'Jan 12, 2026' },
-    { name: 'Alice Mutoni', contact: '0788987654', orders: 1, spent: '12,000 RWF', joined: 'Oct 20, 2026' },
-    { name: 'David N', contact: 'david.n@example.com', orders: 5, spent: '120,000 RWF', joined: 'Mar 05, 2026' },
-    { name: 'Sarah K.', contact: '0733445566', orders: 2, spent: '20,500 RWF', joined: 'Aug 17, 2026' },
-    { name: 'Mugisha E.', contact: 'mugisha.e@example.com', orders: 1, spent: '18,000 RWF', joined: 'Sep 02, 2026' },
-    { name: 'Grace U.', contact: '0781112233', orders: 4, spent: '65,000 RWF', joined: 'Feb 28, 2026' }
-];
+function saveAdminData() {
+    localStorage.setItem('aura_orders', JSON.stringify(mockOrders));
+    localStorage.setItem('aura_customers', JSON.stringify(mockCustomers));
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
@@ -236,7 +227,16 @@ function renderDashboard() {
 
 // Global functions for inline onclick handlers
 window.viewOrder = function(orderId) {
-    alert('Viewing details for order ' + orderId + '. Action modal can be added here.');
+    const order = mockOrders.find(o => o.id === orderId);
+    if(order) {
+        let details = `Order ID: ${order.id}\nCustomer: ${order.customer}\nDate: ${order.date}\nAmount: ${order.amount}\nStatus: ${order.status}\n\nItems:\n`;
+        if(order.items) {
+            order.items.forEach(item => {
+                details += `- ${item.quantity}x ${item.name} (${item.price} RWF each)\n`;
+            });
+        }
+        alert(details);
+    }
 };
 
 window.editProduct = function(productId) {
@@ -252,12 +252,16 @@ window.deleteProduct = function(productId) {
 };
 
 window.viewCustomer = function(customerName) {
-    alert('Viewing details for customer: ' + customerName + '. Full profile view can be added here.');
+    const customer = mockCustomers.find(c => c.name === customerName);
+    if(customer) {
+        alert(`Customer Profile:\n\nName: ${customer.name}\nContact: ${customer.contact}\nTotal Orders: ${customer.orders}\nTotal Spent: ${customer.spent}\nJoined: ${customer.joined}`);
+    }
 };
 
 window.deleteOrder = function(orderId) {
     if(confirm('Are you sure you want to delete order ' + orderId + '?')) {
         mockOrders = mockOrders.filter(o => o.id !== orderId);
+        saveAdminData();
         renderDashboard();
     }
 };
@@ -265,6 +269,7 @@ window.deleteOrder = function(orderId) {
 window.deleteCustomer = function(customerName) {
     if(confirm('Are you sure you want to delete customer ' + customerName + '?')) {
         mockCustomers = mockCustomers.filter(c => c.name !== customerName);
+        saveAdminData();
         renderDashboard();
     }
 };

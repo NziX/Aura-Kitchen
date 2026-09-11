@@ -223,6 +223,38 @@ function setupEventListeners() {
             case 'card': paymentMethodText = 'Credit/Debit Card'; break;
             case 'cod': paymentMethodText = 'Cash on Delivery'; break;
         }
+
+        // Save Order and Customer to LocalStorage for Admin Panel
+        const orderId = '#ORD-' + Math.floor(1000 + Math.random() * 9000);
+        const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        let orders = JSON.parse(localStorage.getItem('aura_orders')) || [];
+        orders.unshift({
+            id: orderId,
+            customer: name,
+            date: dateStr,
+            amount: cartTotal.textContent,
+            status: 'Pending',
+            statusColor: 'bg-yellow-100 text-yellow-800',
+            items: cart.map(item => ({ name: item.product.name, quantity: item.quantity, price: item.product.price }))
+        });
+        localStorage.setItem('aura_orders', JSON.stringify(orders));
+
+        let customers = JSON.parse(localStorage.getItem('aura_customers')) || [];
+        let existingCustomer = customers.find(c => c.contact === phone);
+        if (existingCustomer) {
+            existingCustomer.orders += 1;
+            // Simplified spent increment
+        } else {
+            customers.push({
+                name: name,
+                contact: phone,
+                orders: 1,
+                spent: cartTotal.textContent,
+                joined: dateStr
+            });
+        }
+        localStorage.setItem('aura_customers', JSON.stringify(customers));
         
         // Construct WhatsApp Message
         let message = `*New Order from Aura Kitchen* 🍳\n\n`;
